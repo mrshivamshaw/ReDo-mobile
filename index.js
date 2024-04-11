@@ -1,23 +1,24 @@
-import express from 'express'
+// Importing express
+import express from 'express';
 const app = express();
-import { config as configDotenv } from 'dotenv';
-configDotenv()
-
-const port = process.env.PORT || 4000
-app.use(express.json())
-
-//import routes from routes folder
-
-//mount the api route
-// app.use('/api/v1',router);
-// import { dbconnect } from './config/database.js';
-// dbconnect();
-
-app.listen(4000,()=>{
-    console.log("hogya chalu");
-})
+import user from './models/profile.js';
 
 
-app.get('/',(req,res)=>{    
-    res.send('Helloooo jiiiii')
-})
+// Middleware to parse JSON requests
+app.use(express.json());
+
+// Importing the dbconnect function from ./config/database.js
+import dbconnect from './config/database.js';
+dbconnect();
+
+// Start the server on port 4000
+app.listen(4000, () => {
+    console.log("Server is running on port 4000");
+});
+
+
+
+// Route to handle GET requests to the root URL
+app.get('/', (req, res) => {
+    res.send('Hello World');
+});
