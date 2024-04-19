@@ -1,8 +1,10 @@
 import { Router } from "express";
-import { profile } from "../controllers/profile";
+import { profileUpdate, uploadEmoji, uploadProfilePic } from "../controllers/profile.js";
 
 const profileRoute = Router();
 
-profileRoute.post('/updateProfile',profile);
+profileRoute.post('/profile',profileUpdate);
+profileRoute.post('/profilePic',uploadProfilePic);
+profileRoute.post('/profileEmoji',uploadEmoji);
 
 export default profileRoute

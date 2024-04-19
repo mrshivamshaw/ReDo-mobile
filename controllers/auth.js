@@ -1,19 +1,19 @@
-import profile from "../models/profile";
+import profile from "../models/profile.js";
 
-export const login = (req,res) => {
+export const login = async(req,res) => {
     try {
-        const {email,password,id} = req.body;
-        if(!email || !password || !id) {
+        const {email,password} = req.body;
+        if(!email || !password ) {
             return res.status(400).json({
                 success : false,
                 message: 'Invalid credentials'
             })
         }
-        const user = profile.findById(id);
+        const user = await profile.findOne({email});
         if(!user) {
             return res.status(400).json({
                 success : false,
-                message: 'Invalid credentials'
+                message: 'User not found'
             })
         }
         if(user.email !== email || user.password !== password) {
@@ -36,16 +36,37 @@ export const login = (req,res) => {
     }
 }
 
-export const signin = (req,res) => {
+export const signin = async(req,res) => {
     try {
         const {firstName,lastName,dob,email,password,confirmPassword,userName} = req.body;
-        if(firstName || !lastName || !dob || !email || !password || !confirmPassword || !userName) {
+        if(!firstName || !lastName || !dob || !email || !password || !confirmPassword || !userName) {
             return res.status(400).json({
                 success : false,
                 message: 'Invalid credentials'
             })
         }
-        const user = profile.create({firstName,lastName,dob,email,password,userName});
+        const checkUserByEmail = await profile.findOne({email});
+        if(checkUserByEmail) {
+            console.log(checkUserByEmail);
+            return res.status(400).json({
+                success : false,
+                message: 'User already exists'
+            })
+        }
+        const checkUserByUserName = await profile.findOne({userName});
+        if(checkUserByUserName){
+            return res.status(400).json({
+                success : false,
+                message: 'User already exists'
+            })
+        }
+        if(password !== confirmPassword) {
+            return res.status(400).json({
+                success : false,
+                message: 'Passwords do not match'
+            })
+        }
+        const user = await profile.create({firstName,lastName,dob,email,password,userName});
         return res.status(200).json({
             success : true,
             message: 'Signin successful',
